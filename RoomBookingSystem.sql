@@ -22,7 +22,7 @@ CREATE TABLE Room (
     roomNumber INT PRIMARY KEY,
     type VARCHAR(100),
     facility VARCHAR(100),
-    roomAvailability BOOLEAN 
+    roomAvailability NUMBER(1) CHECK (roomAvailability IN (0, 1))
 );
 
 -- RepairRequest Table
