@@ -1,0 +1,1 @@
+SELECT * FROM Room WHERE roomAvailability = TRUE;
