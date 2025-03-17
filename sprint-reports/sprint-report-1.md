@@ -38,14 +38,14 @@ Here are links to the issues that we completed in this sprint:
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
- * [RoomBookingSystem.py]((https://github.com/admsht/cs451-team-project/blob/main/Project/RoomBookingSystem.py))
- * [Dashboard.html]((https://github.com/admsht/cs451-team-project/blob/main/Project/dashboard.html))
- * [Layout.html]((https://github.com/admsht/cs451-team-project/blob/main/Project/layout.html))
- * [Login.html]((https://github.com/admsht/cs451-team-project/blob/main/Project/login.html))
- * [Register.html]((https://github.com/admsht/cs451-team-project/blob/main/Project/register.html))
- * [Filter-by-facilities.sql]((https://github.com/admsht/cs451-team-project/blob/main/queries/filter-by-facilities.sql))
- * [Filter-by-room-type.sql]((https://github.com/admsht/cs451-team-project/blob/main/queries/filter-by-room-type.sql))
- * [View-available-rooms.sql]((https://github.com/admsht/cs451-team-project/blob/main/queries/view-available-rooms.sql))
+ * [RoomBookingSystem.py](https://github.com/admsht/cs451-team-project/blob/main/Project/RoomBookingSystem.py)
+ * [Dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/dashboard.html)
+ * [Layout.html](https://github.com/admsht/cs451-team-project/blob/main/Project/layout.html)
+ * [Login.html](https://github.com/admsht/cs451-team-project/blob/main/Project/login.html)
+ * [Register.html](https://github.com/admsht/cs451-team-project/blob/main/Project/register.html)
+ * [Filter-by-facilities.sql](https://github.com/admsht/cs451-team-project/blob/main/queries/filter-by-facilities.sql)
+ * [Filter-by-room-type.sql](https://github.com/admsht/cs451-team-project/blob/main/queries/filter-by-room-type.sql)
+ * [View-available-rooms.sql](https://github.com/admsht/cs451-team-project/blob/main/queries/view-available-rooms.sql)
  * [Filter-by-facilities-test.sql](https://github.com/admsht/cs451-team-project/blob/main/tests/filter-by-facilities-test.sql)
  * [Filter-by-room-type-test.sql](https://github.com/admsht/cs451-team-project/blob/main/tests/filter-by-room-type-test.sql)
  * [View-available-rooms-test.sql](https://github.com/admsht/cs451-team-project/blob/main/tests/view-available-room-test.sql)
