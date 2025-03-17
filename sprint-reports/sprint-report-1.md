@@ -1,5 +1,5 @@
-# Sprint x Report 
-Video Link: 
+# Sprint 1 Report 
+Video Link: https://drive.google.com/file/d/1LZ4Rbg8qxbhGjlpNBFfukLlSANtcncsT/view?usp=sharing
 ## What's New (User Facing)
 * **Enhanced User Interfaces:**  
   Implemented responsive and user-friendly HTML pages for login, registration, and dashboard functionalities, ensuring seamless navigation and intuitive interactions.
