@@ -22,7 +22,7 @@ CREATE TABLE Room (
     roomNumber INT PRIMARY KEY,
     type VARCHAR(100),
     facility VARCHAR(100),
-    roomAvailability NUMBER(1) CHECK (roomAvailability IN (0, 1))
+    roomAvailability VARCHAR(25) CHECK (roomAvailability IN ('Available', 'Not Available')) 
 );
 
 -- RepairRequest Table
@@ -30,7 +30,7 @@ CREATE TABLE RepairRequest (
     requestID INT PRIMARY KEY,
     studentID INT,
     roomNumber INT,
-    description CLOB,
+    description VARCHAR(250),
     repairStatus VARCHAR(25),
     FOREIGN KEY (studentID) REFERENCES Student(studentID) ON DELETE CASCADE,
     FOREIGN KEY (roomNumber) REFERENCES Room(roomNumber) ON DELETE CASCADE
@@ -53,7 +53,3 @@ CREATE TABLE Booking (
     FOREIGN KEY (studentID) REFERENCES Student(studentID) ON DELETE CASCADE,
     FOREIGN KEY (roomNumber) REFERENCES Room(roomNumber) ON DELETE CASCADE
 );
-
-
-
-
