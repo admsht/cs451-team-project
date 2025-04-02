@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Admin Dashboard</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Room Overview</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Room ID</th>
+                        <th>Status</th>
+                        <th>Student</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Room Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in rooms %}
+                    <tr>
+                        <td>{{ room.id }}</td>
+                        <td>{{ room.status }}</td>
+                        <td>
+                            {% if room.student %}
+                                {{ room.student.name }}
+                            {% else %}
+                                Unassigned
+                            {% endif %}
+                        </td>
+                        <td>{{ room.check_in_date }}</td>
+                        <td>{{ room.check_out_date }}</td>
+                        <td>{{ room.room_type }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
