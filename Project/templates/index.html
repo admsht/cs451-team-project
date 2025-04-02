@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card text-center">
+        <div class="card-header bg-info text-white">
+            <h1>Welcome to Room Booking System</h1>
+        </div>
+        <div class="card-body">
+            <p>Please select your login type:</p>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Student Login</a>
+                <a href="{{ url_for('admin_login') }}" class="btn btn-secondary">Admin Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
