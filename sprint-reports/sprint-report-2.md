@@ -31,25 +31,22 @@ Here are links to the issues that we completed in this sprint:
 Here are links to issues we worked on but did not complete in this sprint:
 
 * [UserStory11: Admin Booking Approval](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374713&issue=admsht%7Ccs451-team-project%7C11):  
-  We did not get to this issue because the admin portal is still under development and we prioritized core user functionalities during this sprint. We will continue in Sprint 2.
+  The booking approval workflow requires additional development to connect with the student booking requests. We will continue in Sprint 3.
 
 * [UserStory10: Admin Room Assignment](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374712&issue=admsht%7Ccs451-team-project%7C10):  
-  We did not get to this issue due to scheduling conflicts and the need to focus on stabilizing the frontend integration. We will continue in Sprint 2.
+  While we've created the admin dashboard interface, the complete room assignment functionality is not fully implemented. We will continue in Sprint 3.
 
 * [UserStory12: Admin Occupancy Reports](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374714&issue=admsht%7Ccs451-team-project%7C12):  
-  We did not get to this issue because the admin portal is not fully operational; occupancy reports are postponed until the portal framework is complete. We will continue in Sprint 2.
+  While we've begun displaying room data in the admin dashboard, comprehensive occupancy reports with filtering and export options are still in development. We will continue in Sprint 3.
 
 * [UserStory9: Maintenance Update Notifications](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374711&issue=admsht%7Ccs451-team-project%7C9):  
-  We did not implement this feature because the backend scheduling service required for reminders was not ready in time. We will continue in Sprint 2.
+  The notification system for maintenance updates requires integration with the admin dashboard which is still being refined. We will continue in Sprint 3.
 
 * [UserStory8: Booking Deadline Reminders](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374710&issue=admsht%7Ccs451-team-project%7C8):  
-  We did not implement this feature because the backend scheduling service required for reminders was not ready in time. We will continue in Sprint 2.
+  The reminder system requires implementation of a notification service that is still under development. We will continue in Sprint 3.
 
 * [UserStory5: Book Room](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374707&issue=admsht%7Ccs451-team-project%7C5):  
-  We did not fully complete this feature as additional testing is required to meet our reliability standards. We will continue in Sprint 2.
-
-* [UserStory1: Student Profile Registration](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100373345&issue=admsht%7Ccs451-team-project%7C1):  
-  We did not fully complete this feature as additional testing is required to meet our reliability standards. We will continue in Sprint 2.
+  We still need additional time to implement the complete room booking functionality with proper validation and confirmation workflows. We will continue in Sprint 3.
 
 
 ## Code Files for Review
