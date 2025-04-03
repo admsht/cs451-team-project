@@ -23,13 +23,8 @@ During Sprint 2, our focus shifted to implementing the administrative components
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
 
- * [Create SQL Tables](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100777174&issue=admsht%7Ccs451-team-project%7C13)
- * [Create login page](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=101193157&issue=admsht%7Ccs451-team-project%7C14)
- * [UserStory2: View Available Rooms](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100373595&issue=admsht%7Ccs451-team-project%7C2)
- * [UserStory3: Filter by Room Type](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100373831&issue=admsht%7Ccs451-team-project%7C3)
- * [UserStory4: Filter by Facilities](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374706&issue=admsht%7Ccs451-team-project%7C4)
- * [UserStory6: Submit Repair Requests](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374708&issue=admsht%7Ccs451-team-project%7C6)
- * [UserStory7: Track Repair Status](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=100374709&issue=admsht%7Ccs451-team-project%7C7)
+ * [Admin login page](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=102929249&issue=admsht%7Ccs451-team-project%7C18)
+ * [Admin dashboard](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=102929697&issue=admsht%7Ccs451-team-project%7C20)
 
  
  ## Incomplete Issues/User Stories
