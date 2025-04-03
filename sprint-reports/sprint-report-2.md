@@ -1,23 +1,23 @@
-# Sprint 1 Report 
-Video Link: https://drive.google.com/file/d/1LZ4Rbg8qxbhGjlpNBFfukLlSANtcncsT/view?usp=sharing
+# Sprint 2 Report 
+Video Link:
 ## What's New (User Facing)
-* **Enhanced User Interfaces:**  
-  Implemented responsive and user-friendly HTML pages for login, registration, and dashboard functionalities, ensuring seamless navigation and intuitive interactions.
-* **Improved Room Filtering:**  
-  Introduced SQL functions that let users filter available rooms by facilities, room types, and availability, making it easier for users to find the perfect room based on their needs.
-* **Reliable Booking Information:**  
-  Developed comprehensive tests for the SQL functions, ensuring that users always receive accurate and up-to-date room information.
+* **Admin Portal Implementation:**  
+  Created a dedicated admin login and dashboard interface, allowing administrators to oversee room statuses, occupancy, and user assignments through a centralized view.
+* **Enhanced Authentication System:**  
+  Implemented role-based authentication that differentiates between student users and administrative staff, ensuring appropriate access control throughout the system.
+* **Improved Database Integration:**  
+  Refined the PostgreSQL database configuration and model definitions, ensuring proper table naming conventions and preventing conflicts with reserved keywords.
 
 ## Work Summary (Developer Facing)
-Our primary focus during this sprint was to establish the core functionalities that connect the frontend with our underlying database operations. We achieved this by:
-* **Implementing Key Components:**  
-  Developed foundational HTML pages for authentication (login, registration) and dashboard views, integrating them with backend logic.
-* **SQL Query Development:**  
-  Created and optimized SQL functions to retrieve filtered data from our Room table based on various parameters such as room type, facilities, and availability.
-* **Testing & Quality Assurance:**  
-  Crafted and executed test cases for each SQL function to validate our filtering and retrieval logic, ensuring the system behaves as expected.
-* **Collaboration & Best Practices:**  
-  Worked collaboratively to resolve integration challenges, upheld best practices in coding, and ensured our SQL implementations can be effectively translated and maintained in PostgreSQL.
+During Sprint 2, our focus shifted to implementing the administrative components of our Room Booking System while refining our existing database and authentication infrastructure. We achieved this by:
+* **Admin Authentication System:**  
+  Developed specialized access controls that distinguish between student and administrative users, ensuring proper security protocols throughout the application.
+* **Admin Dashboard Implementation:**  
+  Created a functional admin dashboard that displays room occupancy data, enabling administrators to monitor and manage room assignments efficiently.
+* **Database Structure Refinement:**  
+  Improved our database model structure to avoid naming conflicts with PostgreSQL reserved keywords, resolving potential issues with table creation and queries.
+* **Role-Based Access Control:**  
+  Implemented custom decorators to restrict access to admin-only pages, ensuring that only authorized personnel can view or modify sensitive system information.
   
 
 ## Completed Issues/User Stories
@@ -59,27 +59,22 @@ Here are links to issues we worked on but did not complete in this sprint:
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
- * [RoomBookingSystem.py](https://github.com/admsht/cs451-team-project/blob/main/Project/RoomBookingSystem.py)
- * [Dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/dashboard.html)
- * [Layout.html](https://github.com/admsht/cs451-team-project/blob/main/Project/layout.html)
- * [Login.html](https://github.com/admsht/cs451-team-project/blob/main/Project/login.html)
- * [Register.html](https://github.com/admsht/cs451-team-project/blob/main/Project/register.html)
- * [Filter-by-facilities.sql](https://github.com/admsht/cs451-team-project/blob/main/queries/filter-by-facilities.sql)
- * [Filter-by-room-type.sql](https://github.com/admsht/cs451-team-project/blob/main/queries/filter-by-room-type.sql)
- * [View-available-rooms.sql](https://github.com/admsht/cs451-team-project/blob/main/queries/view-available-rooms.sql)
- * [Filter-by-facilities-test.sql](https://github.com/admsht/cs451-team-project/blob/main/tests/filter-by-facilities-test.sql)
- * [Filter-by-room-type-test.sql](https://github.com/admsht/cs451-team-project/blob/main/tests/filter-by-room-type-test.sql)
- * [View-available-rooms-test.sql](https://github.com/admsht/cs451-team-project/blob/main/tests/view-available-room-test.sql)
+ * [app.py](https://github.com/admsht/cs451-team-project/blob/main/Project/app.py)
+ * [admin_dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/admin_dashboard.html)
+ * [admin_login.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/admin_login.html)
  
 ## Retrospective Summary
 Here's what went well:
-  * All work was completed smoothly and timely
-  * There were no major issues during this sprint
+  * Successfully implemented the admin interface and role-based authentication
+  * Improved database configuration to work better with PostgreSQL conventions
+  * Better team coordination compared to Sprint 1 with more regular meetings
 
 Here's what we'd like to improve:
-  * Group communication was challenging due to spring break and conflicting schedules
+  * Need better integration between frontend components and database models
+  * Test coverage for admin functionality is currently insufficient
 
 Here are changes we plan to implement in the next sprint:
-  * Establish more consistent group meetings to improve communication
-  * Continue implementing the frontend and integrate it with our database functionality
-  * Maintain best practices with our SQL code to ensure smooth translation into our PostgreSQL database
+  * Complete the remaining user stories focused on booking functionality and notifications
+  * Implement proper model relationships between rooms, users, and bookings
+  * Develop comprehensive testing for admin approval workflows
+  * Finalize the student profile management system with proper validation
