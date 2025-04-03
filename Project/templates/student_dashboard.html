@@ -4,15 +4,55 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">Welcome, {{ username }}!</h2>
+            <h2 class="mb-0">Welcome, {{ username }}</h2>
         </div>
         <div class="card-body">
             <h5 class="card-title">Student Dashboard</h5>
-            <p class="card-text">This is your dashboard. Room booking functionality will appear here.</p>
-            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Submit Repair Request</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('submit_repair') }}" method="POST">
+                <div class="mb-3">
+                    <label for="repair_type" class="form-label">Type of Issue</label>
+                    <select class="form-select" id="repair_type" name="repair_type" required>
+                        <option value="" selected disabled>Select Issue Type</option>
+                        <option value="plumbing">Bathroom/Plumbing Issue</option>
+                        <option value="electrical">Electrical/Lighting Issue</option>
+                        <option value="furniture">Furniture Damage</option>
+                        <option value="heating">Heating/Cooling Issue</option>
+                        <option value="wifi">Internet/WiFi Problem</option>
+                        <option value="key">Lock/Key Problem</option>
+                        <option value="pest">Pest Control</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="repair_description" class="form-label">Description</label>
+                    <textarea class="form-control" id="repair_description" name="repair_description" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="repair_urgency" class="form-label">Urgency</label>
+                    <select class="form-select" id="repair_urgency" name="repair_urgency" required>
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
 </div>
+
 {% endblock %}

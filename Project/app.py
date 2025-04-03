@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 import os
 from functools import wraps
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Generate a random secret key
@@ -26,6 +27,20 @@ class User(db.Model):
     
     def __repr__(self):
         return f'<User {self.username}>'
+
+# Model for tracking maintenance and repair requests submitted by students
+class RepairRequest(db.Model):
+    __tablename__ = 'repair_requests'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    repair_type = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    urgency = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), default='pending')
+    date_submitted = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<RepairRequest {self.id}>'
 
 # Student login required decorator
 def login_required(f):
@@ -122,6 +137,32 @@ def register():
 @login_required
 def dashboard():
     return render_template('student_dashboard.html', username=session.get('username'))
+
+# Route to handle the submission of new repair requests from students
+@app.route('/submit-repair', methods=['POST'])
+@login_required
+def submit_repair():
+    user_id = session.get('user_id')
+    
+    # Extract form data submitted by the student
+    repair_type = request.form.get('repair_type')
+    description = request.form.get('repair_description')
+    urgency = request.form.get('repair_urgency')
+    
+    # Create a new RepairRequest object with the submitted data
+    new_repair = RepairRequest(
+        user_id=user_id,
+        repair_type=repair_type,
+        description=description,
+        urgency=urgency,
+        status='pending'
+    )
+    
+    db.session.add(new_repair)
+    db.session.commit()
+    
+    flash('Repair request submitted successfully!', 'success')
+    return redirect(url_for('dashboard'))
 
 # Admin login route
 @app.route('/admin/login', methods=['GET', 'POST'])
