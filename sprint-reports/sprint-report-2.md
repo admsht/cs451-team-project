@@ -1,5 +1,5 @@
 # Sprint 2 Report 
-Video Link:
+Video Link: https://drive.google.com/file/d/1pgWK6vynAP2Cs68BLywJQPNrI8AReH5W/view?usp=sharing
 ## What's New (User Facing)
 * **Admin Portal Implementation:**  
   Created a dedicated admin login and dashboard interface, allowing administrators to oversee room statuses, occupancy, and user assignments through a centralized view.
