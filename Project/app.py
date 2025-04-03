@@ -118,10 +118,10 @@ def register():
     return render_template('register.html')
 
 # Student dashboard route
-@app.route('/dashboard')
+@app.route('/student/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', username=session.get('username'))
+    return render_template('student_dashboard.html', username=session.get('username'))
 
 # Admin login route
 @app.route('/admin/login', methods=['GET', 'POST'])
