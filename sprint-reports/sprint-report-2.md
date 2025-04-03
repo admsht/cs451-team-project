@@ -18,6 +18,8 @@ During Sprint 2, our focus shifted to implementing the administrative components
   Improved our database model structure to avoid naming conflicts with PostgreSQL reserved keywords, resolving potential issues with table creation and queries.
 * **Role-Based Access Control:**  
   Implemented custom decorators to restrict access to admin-only pages, ensuring that only authorized personnel can view or modify sensitive system information.
+* **Student Dashboard Enhancement:**
+  Implemented a repair request system in the student dashboard, allowing students to report maintenance issues with different levels of urgency.
   
 
 ## Completed Issues/User Stories
@@ -25,6 +27,7 @@ Here are links to the issues that we completed in this sprint:
 
  * [Admin login page](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=102929249&issue=admsht%7Ccs451-team-project%7C18)
  * [Admin dashboard](https://github.com/users/admsht/projects/2/views/1?pane=issue&itemId=102929697&issue=admsht%7Ccs451-team-project%7C20)
+ * [Student dashboard](https://github.com/users/admsht/projects/2?pane=issue&itemId=102929766&issue=admsht%7Ccs451-team-project%7C21)
 
  
  ## Incomplete Issues/User Stories
@@ -54,6 +57,7 @@ Please review the following code files, which were actively developed during thi
  * [app.py](https://github.com/admsht/cs451-team-project/blob/main/Project/app.py)
  * [admin_dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/admin_dashboard.html)
  * [admin_login.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/admin_login.html)
+ * [student_dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/student_dashboard.html)
  
 ## Retrospective Summary
 Here's what went well:
