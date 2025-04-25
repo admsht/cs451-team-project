@@ -3,7 +3,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 import os
 from functools import wraps
-from datetime import datetime
+from datetime import datetime, date
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Generate a random secret key
@@ -41,6 +41,34 @@ class RepairRequest(db.Model):
     
     def __repr__(self):
         return f'<RepairRequest {self.id}>'
+
+# model for the rooms in the system for students to book
+class Room(db.Model):
+    __tablename__ = 'Room'
+    roomNumber = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(100), nullable=False)
+    facility = db.Column(db.String(100), nullable=False)
+    roomAvailability = db.Column(db.String(25), nullable=False, server_default='Available', doc="CHECK (roomAvailability IN ('Available','Not Available'))")
+
+
+def __repr__(self):
+        return f'<Room {self.roomNumber} ({self.roomAvailability})>'
+
+
+class Booking(db.Model):
+    __tablename__ = 'Booking'
+    bookingID   = db.Column(db.Integer, primary_key=True)
+    studentID   = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    roomNumber  = db.Column(db.Integer, db.ForeignKey('Room.roomNumber', ondelete='CASCADE'), nullable = False)
+    status = db.Column(db.String(25), nullable=False, server_default='Pending',
+    doc = "CHECK (status IN ('Pending','Confirmed','Cancelled'))")
+    bookingDate = db.Column(db.Date, nullable=False, default = date.today)
+    student = db.relationship('User', backref='bookings')
+    room    = db.relationship('Room', backref='bookings')
+
+    def __repr__(self):
+        return f'<Booking {self.bookingID}: student {self.studentID} → room {self.roomNumber}>'
+
 
 # Student login required decorator
 def login_required(f):
@@ -136,8 +164,14 @@ def register():
 @app.route('/student/dashboard')
 @login_required
 def dashboard():
-    return render_template('student_dashboard.html', username=session.get('username'))
-
+    user_id  = session['user_id']
+    # get bookings
+    my_bookings = Booking.query.filter_by(studentID=user_id).all()
+    return render_template(
+        'student_dashboard.html',
+        username = session.get('username'),
+        bookings = my_bookings
+    )
 # Route to handle the submission of new repair requests from students
 @app.route('/submit-repair', methods=['POST'])
 @login_required
@@ -194,7 +228,49 @@ def logout():
     flash('You have been logged out', 'info')
     return redirect(url_for('index'))
 
+# route for booking a room
+@app.route('/book-room', methods=['GET', 'POST'])
+@login_required
+def book_room():
+    if request.method == 'GET':
+        available = Room.query.filter_by(roomAvailability ='Available').all()
+        return render_template('book_room.html', rooms=available)
+
+    # create a booking
+    room_num = int(request.form['roomNumber'])
+    b_date = datetime.strptime(request.form['bookingDate'], '%Y-%m-%d').date()
+    student_id = session['user_id']
+
+    room = Room.query.get(room_num)
+    if not room or room.roomAvailability != 'Available':
+        flash('That room is no longer available.', 'danger')
+        return redirect(url_for('book_room'))
+
+    new_booking = Booking(
+        studentID = student_id,
+        roomNumber = room_num,
+        bookingDate = b_date
+    )
+    room.roomAvailability = 'Not Available'
+
+    db.session.add(new_booking)
+    db.session.commit()
+
+    flash(f'Room {room_num} booked for {b_date}', 'success')
+    return redirect(url_for('dashboard'))
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database tables if they don't exist.
+        
+        # sample date
+        if Room.query.count() == 0:
+            rooms = [
+                Room(roomNumber=101, type='Single', facility='Facility A'),
+                Room(roomNumber=102, type='Double', facility='Facility B'),
+            ]
+            db.session.bulk_save_objects(rooms)
+            db.session.commit()
+
     app.run(debug=True)
