@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-calendar-check"></i> My Bookings</h2>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        <div class="card-body">
+            {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Room Number</th>
+                                <th>Room Type</th>
+                                <th>Booking Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.bookingID }}</td>
+                                <td>{{ booking.roomNumber }}</td>
+                                <td>{{ booking.room.type }}</td>
+                                <td>{{ booking.bookingDate.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if booking.status == 'Confirmed' %}bg-success
+                                        {% elif booking.status == 'Pending' %}bg-warning text-dark
+                                        {% elif booking.status == 'Cancelled' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ booking.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-info view-details" 
+                                            data-bs-toggle="modal" data-bs-target="#bookingDetailsModal"
+                                            data-id="{{ booking.bookingID }}"
+                                            data-room="{{ booking.roomNumber }}"
+                                            data-type="{{ booking.room.type }}"
+                                            data-facility="{{ booking.room.facility }}"
+                                            data-date="{{ booking.bookingDate.strftime('%Y-%m-%d') }}"
+                                            data-status="{{ booking.status }}">
+                                        <i class="bi bi-eye"></i> View
+                                    </button>
+                                    
+                                    {% if booking.status == 'Pending' %}
+                                    <form action="{{ url_for('cancel_booking') }}" method="POST" style="display:inline;">
+                                        <input type="hidden" name="booking_id" value="{{ booking.bookingID }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?');">
+                                            <i class="bi bi-x-circle"></i> Cancel
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> You have no bookings at this time.
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('book_room') }}" class="btn btn-success">
+                        <i class="bi bi-calendar-plus"></i> Book a Room
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Booking Details Modal -->
+<div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="bookingDetailsModalLabel">Booking Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <p><strong>Booking ID:</strong> <span id="detail-id"></span></p>
+                        <p><strong>Room Number:</strong> <span id="detail-room"></span></p>
+                        <p><strong>Room Type:</strong> <span id="detail-type"></span></p>
+                        <p><strong>Facility:</strong> <span id="detail-facility"></span></p>
+                        <p><strong>Booking Date:</strong> <span id="detail-date"></span></p>
+                        <p><strong>Status:</strong> <span id="detail-status"></span></p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-secondary mt-3">
+                    <i class="bi bi-lightbulb"></i> <strong>Note:</strong> Bookings must be approved by an administrator before they are confirmed.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle View Details button clicks
+    const viewDetailsButtons = document.querySelectorAll('.view-details');
+    viewDetailsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Get data attributes
+            const id = this.getAttribute('data-id');
+            const room = this.getAttribute('data-room');
+            const type = this.getAttribute('data-type');
+            const facility = this.getAttribute('data-facility');
+            const date = this.getAttribute('data-date');
+            const status = this.getAttribute('data-status');
+            
+            // Update modal with details
+            document.getElementById('detail-id').textContent = id;
+            document.getElementById('detail-room').textContent = room;
+            document.getElementById('detail-type').textContent = type;
+            document.getElementById('detail-facility').textContent = facility;
+            document.getElementById('detail-date').textContent = date;
+            
+            // Style the status badge
+            const statusSpan = document.getElementById('detail-status');
+            statusSpan.textContent = status;
+            statusSpan.className = 'badge';
+            if (status === 'Confirmed') {
+                statusSpan.classList.add('bg-success');
+            } else if (status === 'Pending') {
+                statusSpan.classList.add('bg-warning', 'text-dark');
+            } else if (status === 'Cancelled') {
+                statusSpan.classList.add('bg-danger');
+            } else {
+                statusSpan.classList.add('bg-secondary');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
