@@ -1,0 +1,409 @@
+{% extends "layout.html" %}
+
+{% block title %}Room Management{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-house-gear"></i> Room Management</h2>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs mb-4" id="roomManagementTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="assign-tab" data-bs-toggle="tab" data-bs-target="#assign" 
+                    type="button" role="tab" aria-controls="assign" aria-selected="true">
+                <i class="bi bi-person-plus"></i> Assign Rooms
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="approve-tab" data-bs-toggle="tab" data-bs-target="#approve" 
+                    type="button" role="tab" aria-controls="approve" aria-selected="false">
+                <i class="bi bi-check-circle"></i> Approve Bookings
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" 
+                    type="button" role="tab" aria-controls="reports" aria-selected="false">
+                <i class="bi bi-bar-chart"></i> Occupancy Reports
+            </button>
+        </li>
+    </ul>
+    
+    <!-- Tab Content -->
+    <div class="tab-content" id="roomManagementTabContent">
+        <!-- Assign Rooms Tab -->
+        <div class="tab-pane fade show active" id="assign" role="tabpanel" aria-labelledby="assign-tab">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Assign Rooms to Students</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Available Room Table -->
+                    <h6 class="border-bottom pb-2 mb-3">Available Rooms</h6>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-hover table-striped" id="available-rooms-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Room Number</th>
+                                    <th>Type</th>
+                                    <th>Facility</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if available_rooms %}
+                                    {% for room in available_rooms %}
+                                        <tr class="room-row" data-room-id="{{ room.id|default(room.roomNumber) }}" data-room-type="{{ room.room_type|default(room.type) }}">
+                                            <td>{{ room.id|default(room.roomNumber) }}</td>
+                                            <td>{{ room.room_type|default(room.type) }}</td>
+                                            <td>{{ room.facility|default('Standard') }}</td>
+                                            <td>
+                                                <span class="badge bg-success">Available</span>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary select-room-btn" 
+                                                        data-room-id="{{ room.id|default(room.roomNumber) }}" 
+                                                        data-room-type="{{ room.room_type|default(room.type) }}"
+                                                        data-room-facility="{{ room.facility|default('Standard') }}">
+                                                    <i class="bi bi-check-square"></i> Select
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">
+                                            <div class="alert alert-info m-0">
+                                                No available rooms found.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Assignment Form -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Room Assignment</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="roomAssignmentForm" action="{{ url_for('assign_room') }}" method="POST">
+                                <input type="hidden" id="selectedRoomId" name="room_id" value="">
+                                
+                                <div class="mb-3">
+                                    <label for="selectedRoom" class="form-label">Selected Room</label>
+                                    <input type="text" class="form-control" id="selectedRoom" readonly placeholder="Select a room from the table above">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="studentSelect" class="form-label">Select Student</label>
+                                    <select class="form-select" id="studentSelect" name="student_id" required>
+                                        <option value="" selected disabled>Choose a student</option>
+                                        {% for student in students %}
+                                        <option value="{{ student.id }}">{{ student.username }} ({{ student.student_id }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="checkInDate" class="form-label">Check-in Date</label>
+                                        <input type="date" class="form-control" id="checkInDate" name="check_in_date" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="checkOutDate" class="form-label">Check-out Date</label>
+                                        <input type="date" class="form-control" id="checkOutDate" name="check_out_date" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary" id="assignRoomBtn" disabled>
+                                        <i class="bi bi-check-lg"></i> Assign Room
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Approve Bookings Tab -->
+        <div class="tab-pane fade" id="approve" role="tabpanel" aria-labelledby="approve-tab">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Pending Booking Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if pending_bookings %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Student</th>
+                                    <th>Room</th>
+                                    <th>Booking Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in pending_bookings %}
+                                <tr>
+                                    <td>{{ booking.bookingID }}</td>
+                                    <td>{{ booking.student.username }}</td>
+                                    <td>Room {{ booking.roomNumber }} ({{ booking.room.type }})</td>
+                                    <td>{{ booking.bookingDate }}</td>
+                                    <td><span class="badge bg-warning text-dark">{{ booking.status }}</span></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <form action="{{ url_for('approve_booking') }}" method="POST" style="display:inline;">
+                                                <input type="hidden" name="booking_id" value="{{ booking.bookingID }}">
+                                                <button type="submit" class="btn btn-success" title="Approve">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                            </form>
+                                            <form action="{{ url_for('reject_booking') }}" method="POST" style="display:inline;">
+                                                <input type="hidden" name="booking_id" value="{{ booking.bookingID }}">
+                                                <button type="submit" class="btn btn-danger" title="Reject">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No pending booking requests at this time.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Occupancy Reports Tab -->
+        <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Dormitory Occupancy Reports</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Room Type Table -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Occupancy by Room Type</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Room Type</th>
+                                            <th>Occupied</th>
+                                            <th>Available</th>
+                                            <th>Total</th>
+                                            <th>Occupancy Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in range(room_types_labels|length) %}
+                                        <tr>
+                                            <td>{{ room_types_labels[i] }}</td>
+                                            <td>{{ room_types_occupied[i] }}</td>
+                                            <td>{{ room_types_available[i] }}</td>
+                                            <td>{{ room_types_occupied[i] + room_types_available[i] }}</td>
+                                            <td>
+                                                {% set total = room_types_occupied[i] + room_types_available[i] %}
+                                                {% if total > 0 %}
+                                                    {{ ((room_types_occupied[i] / total) * 100)|round }}%
+                                                {% else %}
+                                                    0%
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Facility Table -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Rooms by Facility</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Facility</th>
+                                            <th>Total Rooms</th>
+                                            <th>Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in range(facilities_labels|length) %}
+                                        <tr>
+                                            <td>{{ facilities_labels[i] }}</td>
+                                            <td>{{ facilities_occupancy[i] }}</td>
+                                            <td>
+                                                {% if total_rooms > 0 %}
+                                                    {{ ((facilities_occupancy[i] / total_rooms) * 100)|round }}%
+                                                {% else %}
+                                                    0%
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Room Assignment JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle room selection from table
+    const selectRoomBtns = document.querySelectorAll('.select-room-btn');
+    const selectedRoomInput = document.getElementById('selectedRoom');
+    const selectedRoomIdInput = document.getElementById('selectedRoomId');
+    const assignRoomBtn = document.getElementById('assignRoomBtn');
+
+    selectRoomBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all table rows
+            document.querySelectorAll('#available-rooms-table tr').forEach(row => 
+                row.classList.remove('table-primary'));
+            
+            // Add highlight to the selected row
+            this.closest('tr').classList.add('table-primary');
+            
+            // Update form with selected room details
+            const roomId = this.getAttribute('data-room-id');
+            const roomType = this.getAttribute('data-room-type');
+            const roomFacility = this.getAttribute('data-room-facility') || 'Standard';
+            
+            // Format the display text properly
+            let roomDisplayText = `Room ${roomId}`;
+            if (roomType) {
+                roomDisplayText += ` (${roomType}`;
+                if (roomFacility && roomFacility !== 'Standard') {
+                    roomDisplayText += `, ${roomFacility}`;
+                }
+                roomDisplayText += `)`;
+            }
+            
+            selectedRoomInput.value = roomDisplayText;
+            selectedRoomIdInput.value = roomId;
+            
+            // Enable the assign button
+            assignRoomBtn.disabled = false;
+        });
+    });
+    
+    // Set min dates for check-in and check-out
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('checkInDate').min = today;
+    document.getElementById('checkOutDate').min = today;
+    
+    // Ensure check-out date is after check-in date
+    document.getElementById('checkInDate').addEventListener('change', function() {
+        document.getElementById('checkOutDate').min = this.value;
+    });
+});
+</script>
+
+<!-- Occupancy Charts JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize charts when the reports tab is shown
+    document.getElementById('reports-tab').addEventListener('shown.bs.tab', function() {
+        // Parse the Jinja template variables safely
+        const roomTypesLabels = JSON.parse('{{ room_types_labels|tojson }}');
+        const roomTypesOccupied = JSON.parse('{{ room_types_occupied|tojson }}');
+        const roomTypesAvailable = JSON.parse('{{ room_types_available|tojson }}');
+        const facilitiesLabels = JSON.parse('{{ facilities_labels|tojson }}');
+        const facilitiesOccupancy = JSON.parse('{{ facilities_occupancy|tojson }}');
+        
+        // Room Type Occupancy Chart
+        const roomTypeCtx = document.getElementById('roomTypeChart').getContext('2d');
+        new Chart(roomTypeCtx, {
+            type: 'bar',
+            data: {
+                labels: roomTypesLabels,
+                datasets: [{
+                    label: 'Occupied',
+                    data: roomTypesOccupied,
+                    backgroundColor: 'rgba(40, 167, 69, 0.7)'
+                }, {
+                    label: 'Available',
+                    data: roomTypesAvailable,
+                    backgroundColor: 'rgba(255, 193, 7, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Facility Occupancy Chart
+        const facilityCtx = document.getElementById('facilityChart').getContext('2d');
+        new Chart(facilityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: facilitiesLabels,
+                datasets: [{
+                    data: facilitiesOccupancy,
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.7)',
+                        'rgba(0, 123, 255, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(220, 53, 69, 0.7)',
+                        'rgba(23, 162, 184, 0.7)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
