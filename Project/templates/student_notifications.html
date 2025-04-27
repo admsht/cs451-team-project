@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-bell"></i> Notifications</h2>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        <div class="card-body">
+            {% if notifications %}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title">Your Notifications</h5>
+                    <form action="{{ url_for('mark_all_read') }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-check-all"></i> Mark All as Read
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="list-group">
+                    {% for notification in notifications %}
+                        <div class="list-group-item list-group-item-action {% if not notification.is_read %}list-group-item-info{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    {% if notification.notification_type == 'booking_approval' %}
+                                        <i class="bi bi-check-circle text-success"></i> Booking Approved
+                                    {% elif notification.notification_type == 'booking_rejection' %}
+                                        <i class="bi bi-x-circle text-danger"></i> Booking Rejected
+                                    {% elif notification.notification_type == 'room_assignment' %}
+                                        <i class="bi bi-house-check text-primary"></i> Room Assigned
+                                    {% else %}
+                                        <i class="bi bi-info-circle"></i> System Notification
+                                    {% endif %}
+                                </h6>
+                                <small class="text-muted">{{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-1">{{ notification.message }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+
+                                
+                                {% if not notification.is_read %}
+                                <form action="{{ url_for('mark_notification_read') }}" method="POST">
+                                    <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-check"></i> Mark as Read
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> You have no notifications at this time.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
