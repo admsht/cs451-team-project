@@ -1,5 +1,5 @@
 # Sprint 3 Report 
-Video Link:
+Video Link: https://drive.google.com/file/d/1H3kNy8V0yP7EMF2MBC7JdAeFD04STV0A/view?usp=sharing
 ## What's New (User Facing)
 * **Updated Dashboard:**  
   The student dashboard now displays available rooms and the user is then able to request to book a room. Notifications are also displayed to the user.
@@ -34,15 +34,10 @@ Here are links to the issues that we completed in this sprint:
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
  * [app.py](https://github.com/admsht/cs451-team-project/blob/main/Project/app.py)
- * [admin_dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/admin_dashboard.html)
- * [admin_login.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/admin_login.html)
- * [student_dashboard.html](https://github.com/admsht/cs451-team-project/blob/main/Project/templates/student_dashboard.html)
+ * [/templates/](https://github.com/admsht/cs451-team-project/tree/main/Project/templates)
  
 ## Retrospective Summary
 Here's what went well:
   * Fully implemented room booking and approval system, as well as the repair request system
   * Successfully configured our frontend to the database
   * Good team coordination
-
-Here's what we'd like to improve:
-  * Not all user stories were completed
