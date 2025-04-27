@@ -1,0 +1,197 @@
+{% extends "layout.html" %}
+
+{% block title %}Repair Requests{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Repair Request Status</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Your Repair Requests</h5>
+            
+            {% if repair_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Urgency</th>
+                            <th>Status</th>
+                            <th>Date Submitted</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in repair_requests %}
+                        <tr>
+                            <td>{{ request.id }}</td>
+                            <td>{{ request.repair_type|replace('_', ' ')|capitalize }}</td>
+                            <td>
+                                {% if request.description|length > 30 %}
+                                    {{ request.description[:30] }}...
+                                {% else %}
+                                    {{ request.description }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge {% if request.urgency == 'high' %}bg-danger{% elif request.urgency == 'medium' %}bg-warning{% else %}bg-info{% endif %}">
+                                    {{ request.urgency }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if request.status == 'pending' %}bg-warning{% elif request.status == 'in_progress' %}bg-primary{% elif request.status == 'completed' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ request.status|replace('_', ' ')|capitalize }}
+                                </span>
+                            </td>
+                            <td>{{ request.date_submitted.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-info view-details" 
+                                        data-bs-toggle="modal" data-bs-target="#repairDetailsModal"
+                                        data-id="{{ request.id }}"
+                                        data-type="{{ request.repair_type|replace('_', ' ')|capitalize }}"
+                                        data-description="{{ request.description }}"
+                                        data-urgency="{{ request.urgency }}"
+                                        data-status="{{ request.status|replace('_', ' ')|capitalize }}"
+                                        data-submitted="{{ request.date_submitted.strftime('%Y-%m-%d') }}">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            {% else %}
+                <div class="alert alert-info">
+                    You have not submitted any repair requests yet.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Submit New Repair Request</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('submit_repair') }}" method="POST">
+                <div class="mb-3">
+                    <label for="repair_type" class="form-label">Type of Issue</label>
+                    <select class="form-select" id="repair_type" name="repair_type" required>
+                        <option value="" selected disabled>Select Issue Type</option>
+                        <option value="plumbing">Bathroom/Plumbing Issue</option>
+                        <option value="electrical">Electrical/Lighting Issue</option>
+                        <option value="furniture">Furniture Damage</option>
+                        <option value="heating">Heating/Cooling Issue</option>
+                        <option value="wifi">Internet/WiFi Problem</option>
+                        <option value="key">Lock/Key Problem</option>
+                        <option value="pest">Pest Control</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="repair_description" class="form-label">Description</label>
+                    <textarea class="form-control" id="repair_description" name="repair_description" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="repair_urgency" class="form-label">Urgency</label>
+                    <select class="form-select" id="repair_urgency" name="repair_urgency" required>
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+
+<!-- Repair Details Modal -->
+<div class="modal fade" id="repairDetailsModal" tabindex="-1" aria-labelledby="repairDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="repairDetailsModalLabel">Repair Request Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <p><strong>Request ID:</strong> <span id="detail-id"></span></p>
+                        <p><strong>Type:</strong> <span id="detail-type"></span></p>
+                        <p><strong>Description:</strong> <span id="detail-description"></span></p>
+                        <p><strong>Urgency:</strong> <span id="detail-urgency"></span></p>
+                        <p><strong>Status:</strong> <span id="detail-status"></span></p>
+                        <p><strong>Date Submitted:</strong> <span id="detail-submitted"></span></p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-secondary mt-3">
+                    <i class="bi bi-lightbulb"></i> <strong>Note:</strong> You will receive notifications as your repair request status changes.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle View Details button clicks
+    const viewDetailsButtons = document.querySelectorAll('.view-details');
+    viewDetailsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Get data attributes
+            const id = this.getAttribute('data-id');
+            const type = this.getAttribute('data-type');
+            const description = this.getAttribute('data-description');
+            const urgency = this.getAttribute('data-urgency');
+            const status = this.getAttribute('data-status');
+            const submitted = this.getAttribute('data-submitted');
+            
+            // Update modal with details
+            document.getElementById('detail-id').textContent = id;
+            document.getElementById('detail-type').textContent = type;
+            document.getElementById('detail-description').textContent = description;
+            document.getElementById('detail-urgency').textContent = urgency;
+            document.getElementById('detail-status').textContent = status;
+            document.getElementById('detail-submitted').textContent = submitted;
+            
+            // Style the urgency badge
+            const urgencySpan = document.getElementById('detail-urgency');
+            urgencySpan.className = 'badge';
+            if (urgency === 'high') {
+                urgencySpan.classList.add('bg-danger');
+            } else if (urgency === 'medium') {
+                urgencySpan.classList.add('bg-warning');
+            } else {
+                urgencySpan.classList.add('bg-info');
+            }
+            
+            // Style the status badge
+            const statusSpan = document.getElementById('detail-status');
+            statusSpan.className = 'badge';
+            if (status.toLowerCase() === 'pending') {
+                statusSpan.classList.add('bg-warning');
+            } else if (status.toLowerCase() === 'in progress') {
+                statusSpan.classList.add('bg-primary');
+            } else if (status.toLowerCase() === 'completed') {
+                statusSpan.classList.add('bg-success');
+            } else {
+                statusSpan.classList.add('bg-secondary');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
