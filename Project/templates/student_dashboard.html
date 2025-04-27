@@ -9,44 +9,126 @@
             <h2 class="mb-0">Welcome, {{ username }}</h2>
         </div>
         <div class="card-body">
-            <h5 class="card-title">Student Dashboard</h5>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header bg-danger text-white">
-            <h5 class="mb-0">Submit Repair Request</h5>
-        </div>
-        <div class="card-body">
-            <form action="{{ url_for('submit_repair') }}" method="POST">
-                <div class="mb-3">
-                    <label for="repair_type" class="form-label">Type of Issue</label>
-                    <select class="form-select" id="repair_type" name="repair_type" required>
-                        <option value="" selected disabled>Select Issue Type</option>
-                        <option value="plumbing">Bathroom/Plumbing Issue</option>
-                        <option value="electrical">Electrical/Lighting Issue</option>
-                        <option value="furniture">Furniture Damage</option>
-                        <option value="heating">Heating/Cooling Issue</option>
-                        <option value="wifi">Internet/WiFi Problem</option>
-                        <option value="key">Lock/Key Problem</option>
-                        <option value="pest">Pest Control</option>
-                        <option value="other">Other</option>
-                    </select>
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" 
+                            type="button" role="tab" aria-controls="dashboard" aria-selected="true">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link position-relative" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" 
+                            type="button" role="tab" aria-controls="notifications" aria-selected="false">
+                        <i class="bi bi-bell"></i> Notifications
+                        {% if unread_notifications_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ unread_notifications_count }}
+                            <span class="visually-hidden">unread notifications</span>
+                        </span>
+                        {% endif %}
+                    </button>
+                </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content" id="dashboardTabContent">
+                <!-- Dashboard Content Tab -->
+                <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                    <h5 class="card-title">Student Dashboard</h5>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="{{ url_for('book_room') }}" class="btn btn-success btn-lg">
+                                    <i class="bi bi-calendar-plus"></i> Book a Room
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="{{ url_for('view_bookings') }}" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-calendar-check"></i> My Bookings
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="{{ url_for('view_repair_requests') }}" class="btn btn-danger btn-lg">
+                                    <i class="bi bi-tools"></i> Repair Requests
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="repair_description" class="form-label">Description</label>
-                    <textarea class="form-control" id="repair_description" name="repair_description" rows="3" required></textarea>
+                
+                <!-- Notifications Tab -->
+                <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title">Recent Notifications</h5>
+                        <div>
+                            <form action="{{ url_for('mark_all_read') }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-check-all"></i> Mark All as Read
+                                </button>
+                            </form>
+                            <a href="{{ url_for('view_notifications') }}" class="btn btn-sm btn-primary ms-2">
+                                <i class="bi bi-list-ul"></i> View All
+                            </a>
+                        </div>
+                    </div>
+                    
+                    {% if notifications %}
+                        <div class="list-group">
+                            {% for notification in notifications %}
+                                <div class="list-group-item list-group-item-action {% if not notification.is_read %}list-group-item-info{% endif %}">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">
+                                            {% if notification.notification_type == 'booking_approval' %}
+                                                <i class="bi bi-check-circle text-success"></i> Booking Approved
+                                            {% elif notification.notification_type == 'booking_rejection' %}
+                                                <i class="bi bi-x-circle text-danger"></i> Booking Rejected
+                                            {% elif notification.notification_type == 'room_assignment' %}
+                                                <i class="bi bi-house-check text-primary"></i> Room Assigned
+                                            {% elif notification.notification_type == 'repair_submission' %}
+                                                <i class="bi bi-tools text-primary"></i> Repair Submitted
+                                            {% elif notification.notification_type == 'repair_update' %}
+                                                <i class="bi bi-gear text-warning"></i> Repair Status Updated
+                                            {% else %}
+                                                <i class="bi bi-info-circle"></i> System Notification
+                                            {% endif %}
+                                        </h6>
+                                        <small class="text-muted">{{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ notification.message }}</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        {% if not notification.is_read %}
+                                        <form action="{{ url_for('mark_notification_read') }}" method="POST">
+                                            <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-check"></i> Mark as Read
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if notifications|length >= 5 %}
+                            <div class="text-center mt-3">
+                                <a href="{{ url_for('view_notifications') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-list-ul"></i> View All Notifications
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> You have no notifications at this time.
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="mb-3">
-                    <label for="repair_urgency" class="form-label">Urgency</label>
-                    <select class="form-select" id="repair_urgency" name="repair_urgency" required>
-                        <option value="low">Low</option>
-                        <option value="medium" selected>Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Request</button>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -54,5 +136,4 @@
         <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
     </div>
 </div>
-
 {% endblock %}
